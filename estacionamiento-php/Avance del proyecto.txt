@@ -1,0 +1,27 @@
+1. Instalar aplicaciones de uso MYSQL Xamp PHP (JS JAX)
+2. Diseñar prototipos (Login,Dashboard,Reportes,Funcionalidades o CRUD)
+(DISEÑO BASE DE DATOS) CHECK
+NECESIDAD DE LOGIN CHECK 
+TABLA USUARIOS CHECK 
+
+3. Crear la base datos  CHECK
+4. Diseñar Login CHECK
+5. Validar conexión de Login. 
+(EXCELENTE) CHECK
+6. DASHBOARD (DISEÑO) RESTANTE (FALTA DASHBOARD COMO 
+
+4 DÍAS
+1(LOGIN FUNCIONAL)
+2(DISEÑO DASHBOARD FUNCIONAL)
+3(DISEÑO DE LAS ENTIDADES)
+6. CRUD Usuario
+CREATE CREAR 
+READ LEE 
+UPDATE ACTUALIZAR 
+DELETE BORRAR (Estado Activo/Inactivo)
+7. CRUD Vehiculo
+8. CRUD Tarifas
+9. CRUD Pagos
+10 Servicio TARIFA
+11 Servicio Pago (PDF) 
+12 Servicio 

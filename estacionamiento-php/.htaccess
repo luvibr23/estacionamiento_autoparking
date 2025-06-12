@@ -1,0 +1,68 @@
+# ================================================
+# CONFIGURACIÓN APACHE - SISTEMA DE ESTACIONAMIENTO
+# Archivo: .htaccess (en la raíz del proyecto)
+# ================================================
+
+# Habilitar reescritura de URLs
+RewriteEngine On
+
+# Configurar directorio base
+RewriteBase /estacionamiento-php/
+
+# Configurar página de inicio
+DirectoryIndex index.php
+
+# Configuraciones de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    
+    # Prevenir MIME type sniffing
+    Header set X-Content-Type-Options nosniff
+    
+    # Habilitar XSS protection
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Política de referrer
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Configurar tipos MIME
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType application/json .json
+</IfModule>
+
+# Configurar cache para assets estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# Proteger archivos sensibles
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.ini">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Permitir acceso a archivos CSS y JS
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|svg|ico)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Configurar errores personalizados (opcional)
+# ErrorDocument 404 /estacionamiento-php/errors/404.php
+# ErrorDocument 500 /estacionamiento-php/errors/500.php

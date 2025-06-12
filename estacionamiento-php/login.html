@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Estacionamiento</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --dark-color: #34495e;
+            --light-color: #ecf0f1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .login-header h4 {
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .login-body {
+            padding: 40px 30px;
+        }
+
+        .form-floating {
+            margin-bottom: 20px;
+        }
+
+        .form-floating .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .form-floating label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--secondary-color);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .alert {
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .login-body {
+                padding: 30px 20px;
+            }
+            
+            .login-header {
+                padding: 20px 15px;
+            }
+            
+            .login-header i {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Formas flotantes de fondo -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header del login -->
+            <div class="login-header">
+                <i class="fas fa-parking"></i>
+                <h4>Sistema de Estacionamiento</h4>
+                <p class="mb-0 mt-2" style="opacity: 0.8;">Iniciar Sesión</p>
+            </div>
+
+            <!-- Cuerpo del login -->
+            <div class="login-body">
+                <!-- Mostrar mensajes flash -->
+                <div id="flashMessages"></div>
+
+                <!-- Formulario de login -->
+                <form id="loginForm" novalidate>
+                    <!-- Campo Usuario -->
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="usuario" name="usuario" 
+                               placeholder="Usuario" required autocomplete="username">
+                        <label for="usuario">
+                            <i class="fas fa-user me-2"></i>Usuario
+                        </label>
+                        <div class="invalid-feedback">
+                            Por favor ingrese su usuario
+                        </div>
+                    </div>
+
+                    <!-- Campo Contraseña -->
+                    <div class="form-floating position-relative">
+                        <input type="password" class="form-control" id="password" name="password" 
+                               placeholder="Contraseña" required autocomplete="current-password">
+                        <label for="password">
+                            <i class="fas fa-lock me-2"></i>Contraseña
+                        </label>
+                        <button type="button" class="password-toggle" id="passwordToggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="invalid-feedback">
+                            Por favor ingrese su contraseña
+                        </div>
+                    </div>
+
+                    <!-- Recordar sesión -->
+                    <div class="remember-me">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <label for="rememberMe" class="form-check-label">
+                            Recordar sesión
+                        </label>
+                    </div>
+
+                    <!-- Token CSRF -->
+                    <input type="hidden" name="csrf_token" id="csrfToken" value="">
+                    <input type="hidden" name="action" value="login">
+
+                    <!-- Botón de login -->
+                    <button type="submit" class="btn btn-primary btn-login w-100" id="loginBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </span>
+                        <span class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Verificando...
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Enlaces del footer -->
+                <div class="footer-links">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                        ¿Olvidó su contraseña?
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para recuperar contraseña -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-key me-2"></i>Recuperar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">
+                        Contacte al administrador del sistema para recuperar su contraseña.
+                    </p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Administrador:</strong> admin<br>
+                        <strong>Email:</strong> admin@estacionamiento.com
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar componentes
+            initializeLogin();
+            
+            // Cargar token CSRF
+            loadCSRFToken();
+            
+            // Mostrar mensajes flash si existen
+            showFlashMessages();
+        });
+
+        /**
+         * Inicializar funcionalidad del login
+         */
+        function initializeLogin() {
+            // Toggle de contraseña
+            $('#passwordToggle').click(function() {
+                const passwordField = $('#password');
+                const passwordIcon = $(this).find('i');
+                
+                if (passwordField.attr('type') === 'password') {
+                    passwordField.attr('type', 'text');
+                    passwordIcon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    passwordField.attr('type', 'password');
+                    passwordIcon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+
+            // Validación en tiempo real
+            $('#usuario, #password').on('input', function() {
+                validateField($(this));
+            });
+
+            // Envío del formulario
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+
+            // Enter key en campos
+            $('#usuario, #password').on('keypress', function(e) {
+                if (e.which === 13) {
+                    $('#loginForm').submit();
+                }
+            });
+
+            // Autocompletado de usuarios demo
+            $('#usuario').on('focus', function() {
+                if ($(this).val() === '') {
+                    showDemoUsers();
+                }
+            });
+        }
+
+        /**
+         * Manejar proceso de login
+         */
+        function handleLogin() {
+            // Validar formulario
+            if (!validateForm()) {
+                return;
+            }
+
+            // Mostrar estado de carga
+            setLoadingState(true);
+
+            // Datos del formulario
+            const formData = {
+                usuario: $('#usuario').val().trim(),
+                password: $('#password').val(),
+                csrf_token: $('#csrfToken').val(),
+                action: 'login'
+            };
+
+            // Enviar petición AJAX
+            $.ajax({
+                url: 'controllers/AuthController.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                timeout: 10000,
+                success: function(response) {
+                    handleLoginResponse(response);
+                },
+                error: function(xhr, status, error) {
+                    handleLoginError(xhr, status, error);
+                },
+                complete: function() {
+                    setLoadingState(false);
+                }
+            });
+        }
+
+        /**
+         * Manejar respuesta del login
+         */
+        function handleLoginResponse(response) {
+            if (response.success) {
+                // Login exitoso
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Bienvenido!',
+                    text: response.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    // Redireccionar al dashboard
+                    window.location.href = response.redirect;
+                });
+            } else {
+                // Login fallido
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Acceso',
+                    text: response.message,
+                    confirmButtonColor: '#e74c3c'
+                });
+                
+                // Limpiar contraseña
+                $('#password').val('').focus();
+            }
+        }
+
+        /**
+         * Manejar errores del login
+         */
+        function handleLoginError(xhr, status, error) {
+            let message = 'Error de conexión. Intente nuevamente.';
+            
+            if (status === 'timeout') {
+                message = 'Tiempo de espera agotado. Verifique su conexión.';
+            } else if (xhr.status === 500) {
+                message = 'Error interno del servidor.';
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de Conexión',
+                text: message,
+                confirmButtonColor: '#e74c3c'
+            });
+        }
+
+        /**
+         * Validar formulario
+         */
+        function validateForm() {
+            let isValid = true;
+            const usuario = $('#usuario');
+            const password = $('#password');
+
+            // Validar usuario
+            if (!validateField(usuario)) {
+                isValid = false;
+            }
+
+            // Validar contraseña
+            if (!validateField(password)) {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        /**
+         * Validar campo individual
+         */
+        function validateField(field) {
+            const value = field.val().trim();
+            const isValid = value.length > 0;
+
+            if (isValid) {
+                field.removeClass('is-invalid').addClass('is-valid');
+            } else {
+                field.removeClass('is-valid').addClass('is-invalid');
+            }
+
+            return isValid;
+        }
+
+        /**
+         * Establecer estado de carga
+         */
+        function setLoadingState(loading) {
+            const loginBtn = $('#loginBtn');
+            const btnText = loginBtn.find('.btn-text');
+            const loadingSpinner = loginBtn.find('.loading-spinner');
+
+            if (loading) {
+                loginBtn.prop('disabled', true);
+                btnText.hide();
+                loadingSpinner.show();
+            } else {
+                loginBtn.prop('disabled', false);
+                btnText.show();
+                loadingSpinner.hide();
+            }
+        }
+
+        /**
+         * Cargar token CSRF
+         */
+        function loadCSRFToken() {
+            $.get('api/csrf_token.php', function(data) {
+                $('#csrfToken').val(data.token);
+            }).fail(function() {
+                console.warn('No se pudo cargar el token CSRF');
+            });
+        }
+
+        /**
+         * Mostrar mensajes flash
+         */
+        function showFlashMessages() {
+            // Esta función se implementará cuando tengamos el sistema de mensajes
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            const type = urlParams.get('type');
+
+            if (message && type) {
+                showAlert(type, message);
+            }
+        }
+
+        /**
+         * Mostrar alerta
+         */
+        function showAlert(type, message) {
+            const alertClass = {
+                'success': 'alert-success',
+                'error': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            };
+
+            const iconClass = {
+                'success': 'fa-check-circle',
+                'error': 'fa-times-circle',
+                'warning': 'fa-exclamation-triangle',
+                'info': 'fa-info-circle'
+            };
+
+            const alertHtml = `
+                <div class="alert ${alertClass[type]} alert-dismissible fade show" role="alert">
+                    <i class="fas ${iconClass[type]} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            $('#flashMessages').html(alertHtml);
+        }
+
+        /**
+         * Mostrar usuarios demo
+         */
+        function showDemoUsers() {
+            const demoInfo = `
+                <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Usuarios de Prueba:</strong><br>
+                    <small>
+                        <strong>Admin:</strong> admin / admin123<br>
+                        <strong>Operador:</strong> operador1 / operador123
+                    </small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            if ($('#flashMessages .alert-info').length === 0) {
+                $('#flashMessages').html(demoInfo);
+            }
+        }
+    </script>
+</body>
+</html>

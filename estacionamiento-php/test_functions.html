@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Logout y Funciones de Vehículos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.3/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1><i class="fas fa-vial me-2"></i>Test de Logout y Funciones de Vehículos</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-sign-out-alt me-2"></i>Test de Logout</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Pruebe la función de logout:</p>
+                        <button class="btn btn-danger" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Probar Logout
+                        </button>
+                        <hr>
+                        <p><strong>Resultado esperado:</strong></p>
+                        <ul>
+                            <li>Confirmación de logout</li>
+                            <li>Redirección a login</li>
+                            <li>Mensaje de éxito en login</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-car me-2"></i>Test de Funciones de Vehículos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Pruebe las funciones de vehículos:</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="testEditarVehiculo()">
+                                <i class="fas fa-edit me-2"></i>Probar Editar
+                            </button>
+                            <button class="btn btn-warning" onclick="testVerDetalles()">
+                                <i class="fas fa-eye me-2"></i>Probar Ver Detalles
+                            </button>
+                            <button class="btn btn-danger" onclick="testEliminar()">
+                                <i class="fas fa-trash me-2"></i>Probar Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-list me-2"></i>Estado de Funciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="function-status"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.3/sweetalert2.min.js"></script>
+    <script src="assets/js/logout-functions.js"></script>
+    <script src="assets/js/vehiculos-functions.js"></script>
+    <script src="assets/js/dashboard_fixed.js"></script>
+    
+    <script>
+        // Simular algunos datos para pruebas
+        let vehiculosCrudData = [
+            {
+                id: 1,
+                placa: "TEST123",
+                modelo: "Toyota Test",
+                color: "Rojo",
+                tipo_vehiculo: "auto",
+                fecha_creacion: new Date().toISOString(),
+                cliente_nombre: "Cliente Test",
+                cliente_apellido: "Apellido",
+                codigo_cliente: "CLI001"
+            }
+        ];
+        
+        function testEditarVehiculo() {
+            if (typeof editarVehiculo === "function") {
+                editarVehiculo(1);
+            } else {
+                alert("Función editarVehiculo no está disponible");
+            }
+        }
+        
+        function testVerDetalles() {
+            if (typeof verDetallesVehiculo === "function") {
+                verDetallesVehiculo(1);
+            } else {
+                alert("Función verDetallesVehiculo no está disponible");
+            }
+        }
+        
+        function testEliminar() {
+            if (typeof confirmarEliminarVehiculo === "function") {
+                confirmarEliminarVehiculo(1, "TEST123");
+            } else {
+                alert("Función confirmarEliminarVehiculo no está disponible");
+            }
+        }
+        
+        // Verificar estado de funciones al cargar
+        document.addEventListener("DOMContentLoaded", function() {
+            const status = document.getElementById("function-status");
+            let statusHtml = "";
+            
+            const functions = [
+                "logout",
+                "editarVehiculo", 
+                "actualizarVehiculo",
+                "confirmarEliminarVehiculo",
+                "eliminarVehiculo",
+                "verDetallesVehiculo"
+            ];
+            
+            functions.forEach(func => {
+                const available = typeof window[func] === "function";
+                statusHtml += `
+                    <div class="row mb-1">
+                        <div class="col-6">${func}:</div>
+                        <div class="col-6">
+                            ${available ? 
+                                '<span class="badge bg-success">Disponible</span>' : 
+                                '<span class="badge bg-danger">No disponible</span>'
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+            
+            status.innerHTML = statusHtml;
+        });
+    </script>
+</body>
+</html>

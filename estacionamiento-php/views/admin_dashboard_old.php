@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Estacionamiento</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- CSS Personalizado -->
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-parking me-2"></i>Sistema de Estacionamiento</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span id="user-name">Administrador</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('vehiculos')">
+                                <i class="fas fa-car me-2"></i>Vehículos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('tarifas')">
+                                <i class="fas fa-dollar-sign me-2"></i>Tarifas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('tiempo-real')">
+                                <i class="fas fa-clock me-2"></i>Tiempo Real
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showSection('reportes')">
+                                <i class="fas fa-chart-bar me-2"></i>Reportes
+                            </a>
+                        </li>
+                        <li class="nav-item admin-only">
+                            <a class="nav-link" href="#" onclick="showSection('usuarios')">
+                                <i class="fas fa-users me-2"></i>Usuarios
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Dashboard</h1>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Espacios Ocupados</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="espacios-ocupados">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-car fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Espacios Disponibles</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="espacios-disponibles">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-parking fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ingresos Hoy</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="ingresos-hoy">S/ 0.00</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Vehículos</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="total-vehiculos">0</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Actividad Reciente</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="tabla-actividad">
+                                            <thead>
+                                                <tr>
+                                                    <th>Placa</th>
+                                                    <th>Acción</th>
+                                                    <th>Hora</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>ABC-123</td>
+                                                    <td>Entrada</td>
+                                                    <td>10:30 AM</td>
+                                                    <td><span class="badge bg-success">Activo</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Estado del Sistema</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="small mb-1">Ocupación del Estacionamiento</div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 65%" id="progress-ocupacion"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="small mb-1">Ingresos del Día</div>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 40%" id="progress-ingresos"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehículos Section -->
+                <div id="vehiculos-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Gestión de Vehículos</h1>
+                        <button class="btn btn-primary" onclick="mostrarModalVehiculo()">
+                            <i class="fas fa-plus me-2"></i>Registrar Entrada
+                        </button>
+                    </div>
+
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Vehículos en el Estacionamiento</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="tabla-vehiculos">
+                                    <thead>
+                                        <tr>
+                                            <th>Placa</th>
+                                            <th>Tipo</th>
+                                            <th>Hora Entrada</th>
+                                            <th>Tiempo Transcurrido</th>
+                                            <th>Tarifa</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Datos dinámicos -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarifas Section -->
+                <div id="tarifas-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Gestión de Tarifas</h1>
+                        <button class="btn btn-primary" onclick="mostrarModalTarifa()">
+                            <i class="fas fa-plus me-2"></i>Nueva Tarifa
+                        </button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Tarifas por Tipo de Vehículo</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tipo</th>
+                                                    <th>Tarifa/Hora</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Auto</td>
+                                                    <td>S/ 3.00</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Moto</td>
+                                                    <td>S/ 2.00</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Tarifas Especiales</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label>Tarifa Nocturna (8PM - 6AM)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">S/</span>
+                                            <input type="number" class="form-control" value="2.50" step="0.50">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label>Tarifa Fin de Semana</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">S/</span>
+                                            <input type="number" class="form-control" value="3.50" step="0.50">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-success">Actualizar Tarifas</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tiempo Real Section -->
+                <div id="tiempo-real-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Monitoreo en Tiempo Real</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <button class="btn btn-success me-2" onclick="actualizarTiempoReal()">
+                                <i class="fas fa-sync-alt me-2"></i>Actualizar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">Espacios Totales</h5>
+                                    <h2 class="display-4" id="total-espacios">50</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">Disponibles</h5>
+                                    <h2 class="display-4" id="espacios-libres">25</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title text-danger">Ocupados</h5>
+                                    <h2 class="display-4" id="espacios-ocupados-rt">25</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning">% Ocupación</h5>
+                                    <h2 class="display-4" id="porcentaje-ocupacion">50%</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Estado de Espacios</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="mapa-espacios" class="parking-map">
+                                <!-- Mapa visual del estacionamiento -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reportes Section -->
+                <div id="reportes-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Reportes</h1>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Filtros de Reporte</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label>Fecha Inicio</label>
+                                            <input type="date" class="form-control" id="fecha-inicio">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Fecha Fin</label>
+                                            <input type="date" class="form-control" id="fecha-fin">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>Tipo de Reporte</label>
+                                            <select class="form-control" id="tipo-reporte">
+                                                <option value="ingresos">Ingresos</option>
+                                                <option value="ocupacion">Ocupación</option>
+                                                <option value="vehiculos">Vehículos</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button class="btn btn-primary w-100" onclick="generarReporte()">
+                                                <i class="fas fa-chart-line me-2"></i>Generar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Gráfico de Ingresos</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="grafico-ingresos"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card shadow">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Resumen</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <div class="mb-3">
+                                            <h4>Total Ingresos</h4>
+                                            <h2 class="text-success">S/ 450.00</h2>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h4>Vehículos Atendidos</h4>
+                                            <h2 class="text-info">89</h2>
+                                        </div>
+                                        <div class="mb-3">
+                                            <h4>Tiempo Promedio</h4>
+                                            <h2 class="text-warning">2.5h</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usuarios Section (Solo Admin) -->
+                <div id="usuarios-section" class="content-section admin-only" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Gestión de Usuarios</h1>
+                        <button class="btn btn-primary" onclick="mostrarModalUsuario()">
+                            <i class="fas fa-plus me-2"></i>Nuevo Usuario
+                        </button>
+                    </div>
+
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h6 class="m-0 font-weight-bold text-primary">Lista de Usuarios</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Usuario</th>
+                                            <th>Email</th>
+                                            <th>Rol</th>
+                                            <th>Estado</th>
+                                            <th>Fecha Creación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>admin</td>
+                                            <td>admin@estacionamiento.com</td>
+                                            <td><span class="badge bg-danger">Admin</span></td>
+                                            <td><span class="badge bg-success">Activo</span></td>
+                                            <td>2024-01-01</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal Vehículo -->
+    <div class="modal fade" id="modalVehiculo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Vehículo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formVehiculo">
+                        <div class="mb-3">
+                            <label class="form-label">Placa</label>
+                            <input type="text" class="form-control" id="placa" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Vehículo</label>
+                            <select class="form-control" id="tipo-vehiculo" required>
+                                <option value="">Seleccionar</option>
+                                <option value="auto">Auto</option>
+                                <option value="moto">Moto</option>
+                                <option value="camioneta">Camioneta</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="registrarVehiculo()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Usuario -->
+    <div class="modal fade" id="modalUsuario" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Crear Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formUsuario">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rol</label>
+                            <select class="form-control" id="rol" required>
+                                <option value="">Seleccionar</option>
+                                <option value="admin">Administrador</option>
+                                <option value="operator">Operador</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="crearUsuario()">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Dashboard JS -->
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Completo - Logout y Vehículos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.3/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .test-card { margin-bottom: 20px; }
+        .status-ok { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .status-warning { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1><i class="fas fa-vial me-2"></i>Test Completo del Sistema</h1>
+        <p class="lead">Verificación de funciones de logout y gestión de vehículos</p>
+        
+        <div class="row">
+            <!-- Test de Archivos -->
+            <div class="col-md-6">
+                <div class="card test-card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="fas fa-file-code me-2"></i>Verificación de Archivos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="file-status">Verificando archivos...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test de Funciones -->
+            <div class="col-md-6">
+                <div class="card test-card">
+                    <div class="card-header bg-success text-white">
+                        <h5><i class="fas fa-cogs me-2"></i>Funciones JavaScript</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="functions-status">Verificando funciones...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Test de Logout -->
+            <div class="col-md-6">
+                <div class="card test-card">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-sign-out-alt me-2"></i>Test de Logout</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Pruebe la función de logout completa:</p>
+                        <button class="btn btn-danger btn-lg w-100" onclick="testLogout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Probar Logout
+                        </button>
+                        <div class="mt-3">
+                            <strong>Resultado esperado:</strong>
+                            <ul class="small">
+                                <li>Confirmación con SweetAlert2</li>
+                                <li>Loading mientras procesa</li>
+                                <li>Redirección a login</li>
+                                <li>Mensaje de éxito en login</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Test de Vehículos -->
+            <div class="col-md-6">
+                <div class="card test-card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5><i class="fas fa-car me-2"></i>Test de Vehículos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Pruebe las funciones de vehículos:</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="testEditarVehiculo()">
+                                <i class="fas fa-edit me-2"></i>Probar Editar (ID: 1)
+                            </button>
+                            <button class="btn btn-info" onclick="testVerDetalles()">
+                                <i class="fas fa-eye me-2"></i>Probar Ver Detalles
+                            </button>
+                            <button class="btn btn-warning" onclick="testEliminar()">
+                                <i class="fas fa-trash me-2"></i>Probar Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card test-card">
+                    <div class="card-header bg-info text-white">
+                        <h5><i class="fas fa-link me-2"></i>Links de Navegación</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="login_final.php" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="views/admin_dashboard.php" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard Admin
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="views/operador_dashboard.php" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-user me-2"></i>Dashboard Operador
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-warning w-100" onclick="irMenuPrincipal()">
+                                    <i class="fas fa-home me-2"></i>Menú Principal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.3/sweetalert2.min.js"></script>
+    <script src="assets/js/logout-functions.js"></script>
+    <script src="assets/js/vehiculos-functions.js"></script>
+    <script src="assets/js/dashboard_fixed.js"></script>
+    
+    <script>
+        // Datos de prueba
+        let vehiculosCrudData = [
+            {
+                id: 1,
+                placa: "TEST123",
+                modelo: "Toyota Corolla Test",
+                color: "Azul",
+                tipo_vehiculo: "auto",
+                fecha_creacion: new Date().toISOString(),
+                cliente_nombre: "Juan",
+                cliente_apellido: "Pérez",
+                codigo_cliente: "CLI001"
+            }
+        ];
+        
+        // Funciones de test
+        function testLogout() {
+            if (typeof logout === "function") {
+                logout();
+            } else {
+                Swal.fire("Error", "Función logout no disponible", "error");
+            }
+        }
+        
+        function testEditarVehiculo() {
+            if (typeof editarVehiculo === "function") {
+                editarVehiculo(1);
+            } else {
+                Swal.fire("Error", "Función editarVehiculo no disponible", "error");
+            }
+        }
+        
+        function testVerDetalles() {
+            if (typeof verDetallesVehiculo === "function") {
+                verDetallesVehiculo(1);
+            } else {
+                Swal.fire("Error", "Función verDetallesVehiculo no disponible", "error");
+            }
+        }
+        
+        function testEliminar() {
+            if (typeof confirmarEliminarVehiculo === "function") {
+                confirmarEliminarVehiculo(1, "TEST123");
+            } else {
+                Swal.fire("Error", "Función confirmarEliminarVehiculo no disponible", "error");
+            }
+        }
+        
+        // Verificar archivos al cargar
+        document.addEventListener("DOMContentLoaded", function() {
+            checkFiles();
+            checkFunctions();
+        });
+        
+        async function checkFiles() {
+            const files = [
+                "assets/js/logout-functions.js",
+                "assets/js/vehiculos-functions.js", 
+                "logout.php",
+                "controllers/AuthController_logout.php"
+            ];
+            
+            let html = "";
+            for (const file of files) {
+                try {
+                    const response = await fetch(file, { method: "HEAD" });
+                    const status = response.ok ? "ok" : "error";
+                    const icon = response.ok ? "check-circle" : "times-circle";
+                    html += `<div class="status-${status}"><i class="fas fa-${icon} me-2"></i>${file}</div>`;
+                } catch (error) {
+                    html += `<div class="status-error"><i class="fas fa-times-circle me-2"></i>${file} (Error)</div>`;
+                }
+            }
+            document.getElementById("file-status").innerHTML = html;
+        }
+        
+        function checkFunctions() {
+            const functions = [
+                "logout",
+                "irMenuPrincipal", 
+                "editarVehiculo",
+                "confirmarEliminarVehiculo",
+                "verDetallesVehiculo"
+            ];
+            
+            let html = "";
+            functions.forEach(func => {
+                const available = typeof window[func] === "function";
+                const status = available ? "ok" : "error";
+                const icon = available ? "check-circle" : "times-circle";
+                html += `<div class="status-${status}"><i class="fas fa-${icon} me-2"></i>${func}</div>`;
+            });
+            
+            document.getElementById("functions-status").innerHTML = html;
+        }
+    </script>
+</body>
+</html>
